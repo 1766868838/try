@@ -50,8 +50,8 @@ public class KeyService {
                 byte[] salt = new byte[16];
                 salt = PasswordToKey.hexStringToBytes(user.getPassword().substring(0, 32));
                 byte[] key = PasswordToKey.main(password,salt);
-                byte[] innerkey = PasswordToKey.hexStringToBytes(user.getPassword().substring(32, 64));
-                if(Arrays.equals(innerkey,key)){
+                byte[] innerKey = PasswordToKey.hexStringToBytes(user.getPassword().substring(32, 64));
+                if(Arrays.equals(innerKey,key)){
                     //密码正确，登录界面
                     result = true;
                 }
@@ -74,7 +74,7 @@ public class KeyService {
      * @param username
      * @param password
      */
-    public Boolean registKey(String username,String password,String email){
+    public Boolean registKey(String username,String password,String email,String code){
         //哈希运算得到密钥
         Security.addProvider(new BouncyCastleProvider());
         SecureRandom random = new SecureRandom();

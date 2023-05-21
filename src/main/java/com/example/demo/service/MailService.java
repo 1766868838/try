@@ -50,11 +50,13 @@ public class MailService {
      * @param text
      * @throws jakarta.mail.MessagingException
      */
-    public void sendTextMailMessage(String to,HttpSession session) throws jakarta.mail.MessagingException{
+    public Boolean sendTextMailMessage(String to,HttpSession session) throws jakarta.mail.MessagingException{
         
         checkMail(to);
         String code = randomCode();
 
+        //返回的结果
+        Boolean result;
         //true 代表支持复杂的类型
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(javaMailSender.createMimeMessage(),true);
         //邮件发信人
@@ -67,13 +69,18 @@ public class MailService {
         mimeMessageHelper.setText("您收到的验证码是："+code);
         //邮件发送时间
         mimeMessageHelper.setSentDate(new Date());
-
         //发送邮件
-        javaMailSender.send(mimeMessageHelper.getMimeMessage());
-        System.out.println("发送邮件成功："+sendMailer+"->"+to);
-    
+        try {
+            javaMailSender.send(mimeMessageHelper.getMimeMessage());
+            result = true;
+            System.out.println("发送邮件成功："+sendMailer+"->"+to);
+
+        } catch (Exception e) {
+            result = false;
+        }
         //将发送的邮件地址与code对应，直接存在redis内部
         stringRedisTemplate.opsForValue().set(to.toString(),code.toString(),60*10,TimeUnit.SECONDS);
+        return result;
     }
 
 

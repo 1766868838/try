@@ -43,8 +43,8 @@ public class KeyController {
      * @param email
      */
     @RequestMapping("/regist")
-    public Boolean regist(String username,String password,String email){
-        if(keyService.registKey(username, password, email)){
+    public Boolean regist(String username,String password,String email,String code){
+        if(keyService.registKey(username, password, email, code)){
             return true;
         }
         else {

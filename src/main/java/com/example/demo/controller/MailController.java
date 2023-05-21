@@ -30,8 +30,8 @@ public class MailController {
      * @throws MessagingException
      */
     @RequestMapping("/sendTextMail")
-    public void sendTextMail(String to , HttpSession httpSession) throws MessagingException{
-        mailService.sendTextMailMessage(to,httpSession);
+    public Boolean sendTextMail(String to , HttpSession httpSession) throws MessagingException{
+        return mailService.sendTextMailMessage(to,httpSession);
     }
 
     /**
@@ -41,15 +41,15 @@ public class MailController {
      * @param code
      */
     @RequestMapping("/checkTextMail")
-    public String checkTextMail(String to,String code, HttpSession httpSession){
+    public Boolean checkTextMail(String to,String code, HttpSession httpSession){
         boolean result = mailService.checkTextMail(to ,code ,httpSession);
 
         //在实际使用中不应该是返回一个字符串，直接跳转可能更好。
         if(result){
-            return "right";
+            return true;
         }
         else{
-            return "false";
+            return false;
         }
     }
 }
