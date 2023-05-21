@@ -66,7 +66,7 @@ public class MailService {
         //邮件主题
         mimeMessageHelper.setSubject("测试邮件");
         //邮件内容
-        mimeMessageHelper.setText("您收到的验证码是："+code);
+        mimeMessageHelper.setText("您收到的验证码是："+code+" ,验证码将在10分钟后过期");
         //邮件发送时间
         mimeMessageHelper.setSentDate(new Date());
         //发送邮件

@@ -8,10 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.demo.init.Global;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.pojo.User;
 import com.example.demo.utils.PasswordToKey;
@@ -33,10 +35,16 @@ public class KeyService {
      * @param password
      * @return 用户名密码是否匹配
      * @throws UnsupportedEncodingException
+     * @throws DataAccessException
+     * @1766868838
      */
     public Boolean loginKey(String username,String password) throws UnsupportedEncodingException{
         try{
             Boolean result;//返回的结果
+
+            System.out.println(Global.list.get(0));
+            System.out.println(Global.list.get(1));
+            
             //获取数据库内的内容
             QueryWrapper<User> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("username",username);

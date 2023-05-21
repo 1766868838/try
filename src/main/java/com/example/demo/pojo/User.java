@@ -1,5 +1,7 @@
 package com.example.demo.pojo;
 
+import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -7,7 +9,7 @@ import lombok.Data;
 
 @Data
 @TableName("user")
-public class User{
+public class User implements Serializable{
 
     @TableField("username")
     private String username;
