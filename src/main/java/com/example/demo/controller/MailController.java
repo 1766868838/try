@@ -25,7 +25,7 @@ public class MailController {
     private MailService mailService;
 
     /**
-     * 发送文本邮件,前端地址格式应为http://localhost:8081/mail/sendTextMail?to=xxxxxx@qq.com
+     * 发送文本邮件,前端地址格式应为http://localhost:8081/mail/sendTextMail
      * @param to
      * @throws MessagingException
      */
@@ -35,7 +35,7 @@ public class MailController {
     }
 
     /**
-     * 判断验证码是否正确,前端地址格式应为http://localhost:8081/mail/checkTextMail?to=xxxxxx@qq.com&code=xxxxxx
+     * 判断验证码是否正确,前端地址格式应为http://localhost:8081/mail/checkTextMail
      * @param to
      * @param httpSession
      * @param code

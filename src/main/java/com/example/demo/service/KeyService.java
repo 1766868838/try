@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -34,25 +35,38 @@ public class KeyService {
      * @throws UnsupportedEncodingException
      */
     public Boolean loginKey(String username,String password) throws UnsupportedEncodingException{
-        
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",username);
-        List<User> list = userMapper.selectList(queryWrapper);
-		User user = list.get(0);
-        byte[] salt = new byte[16];
-        salt = PasswordToKey.hexStringToBytes(user.getPassword().substring(0, 32));
-        byte[] key = PasswordToKey.main(password,salt);
-        byte[] innerkey = PasswordToKey.hexStringToBytes(user.getPassword().substring(32, 64));
-        Boolean result;
-        if(Arrays.equals(innerkey,key)){
-            //密码正确，登录界面
-            result = true;
+        try{
+            Boolean result;//返回的结果
+            //获取数据库内的内容
+            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("username",username);
+            List<User> list = userMapper.selectList(queryWrapper);     
+            if(list.size()==0){
+                result = false;
+            }
+            else{
+                //与注册时类似的密码加密过程
+                User user = list.get(0);
+                byte[] salt = new byte[16];
+                salt = PasswordToKey.hexStringToBytes(user.getPassword().substring(0, 32));
+                byte[] key = PasswordToKey.main(password,salt);
+                byte[] innerkey = PasswordToKey.hexStringToBytes(user.getPassword().substring(32, 64));
+                if(Arrays.equals(innerkey,key)){
+                    //密码正确，登录界面
+                    result = true;
+                }
+                else{
+                    //密码错误，提示错误信息
+                    result = false;
+                }
+            }
+
+            return result;
+
         }
-        else{
-            //密码错误，提示错误信息
-            result = false;
+        catch(DataAccessException exception){
+            return false;
         }
-        return result;
     }
 
     /**
@@ -73,11 +87,11 @@ public class KeyService {
         password = new BigInteger(1, keyByte).toString(16);;
         //写入数据库
         User user = new User(username,password,email);
-        int i = userMapper.insert(user);
-        if(i>0){
+        try{
+            userMapper.insert(user);
             return true;
         }
-        else{
+        catch(DataAccessException exception){
             return false;
         }
     }
