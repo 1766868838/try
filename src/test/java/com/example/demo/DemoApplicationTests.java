@@ -1,11 +1,16 @@
 package com.example.demo;
 
+import static org.mockito.Mockito.reset;
+
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+
 import com.example.demo.pojo.User;
 
 import jakarta.annotation.Resource;
@@ -19,6 +24,9 @@ class DemoApplicationTests {
 	@Resource
 	UserMapper userMapper;
 
+    @Resource
+    private RedisTemplate<String,String> redisTemplate;
+
 	@Resource
 	DataSource dataSource;
 	@Test
@@ -30,12 +38,7 @@ class DemoApplicationTests {
 	
 	@Test
 	void list(){
-		System.out.println("连接到的数据库为:");
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",1766868838);
-        List<User> list = userMapper.selectList(queryWrapper);
-		User user = list.get(0);
-		//list.forEach(System.out::println);
-		System.out.println("用户的密码是："+user.getPassword());
+		//redisTemplate.opsForHash().delete("1766868838", "");
+		redisTemplate.delete("1766868838");
 	}
 }

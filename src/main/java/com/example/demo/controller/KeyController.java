@@ -32,7 +32,7 @@ public class KeyController {
             return username;
         }
         else {
-            return "error";
+            return "false";
         }
     }
 

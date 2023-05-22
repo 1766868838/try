@@ -6,14 +6,15 @@ import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.demo.init.Global;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.pojo.User;
 import com.example.demo.utils.PasswordToKey;
@@ -28,6 +29,9 @@ import jakarta.annotation.Resource;
 public class KeyService {
 
     @Resource
+    private RedisTemplate<String,String> redisTemplate;
+
+    @Resource
 	UserMapper userMapper;
     /**
      * 登录业务
@@ -40,25 +44,20 @@ public class KeyService {
      */
     public Boolean loginKey(String username,String password) throws UnsupportedEncodingException{
         try{
-            Boolean result;//返回的结果
+            Boolean result;//函数返回的结果
+            //按username返回需要的redis hash表存入objectMap
+            Map<Object, Object> objectMap = redisTemplate.opsForHash().entries(username.toString());
+            //System.out.println(objectMap.get("password"));
 
-            System.out.println(Global.list.get(0));
-            System.out.println(Global.list.get(1));
-            
-            //获取数据库内的内容
-            QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("username",username);
-            List<User> list = userMapper.selectList(queryWrapper);     
-            if(list.size()==0){
+            if(objectMap.isEmpty()){
                 result = false;
             }
             else{
                 //与注册时类似的密码加密过程
-                User user = list.get(0);
                 byte[] salt = new byte[16];
-                salt = PasswordToKey.hexStringToBytes(user.getPassword().substring(0, 32));
+                salt = PasswordToKey.hexStringToBytes(objectMap.get("password").toString().substring(0, 32));
                 byte[] key = PasswordToKey.main(password,salt);
-                byte[] innerKey = PasswordToKey.hexStringToBytes(user.getPassword().substring(32, 64));
+                byte[] innerKey = PasswordToKey.hexStringToBytes(objectMap.get("password").toString().substring(32, 64));
                 if(Arrays.equals(innerKey,key)){
                     //密码正确，登录界面
                     result = true;
@@ -96,7 +95,12 @@ public class KeyService {
         //写入数据库
         User user = new User(username,password,email);
         try{
+            //插入数据库
             userMapper.insert(user);
+            //更新缓存
+            Jackson2HashMapper mapper = new Jackson2HashMapper(true);
+            Map<String,Object>map = mapper.toHash(user);
+            redisTemplate.opsForHash().putAll(user.getUsername(), map);
             return true;
         }
         catch(DataAccessException exception){
