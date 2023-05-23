@@ -31,4 +31,12 @@ public class InfService {
         List<User> list = userMapper.selectList(null);
         return list;
     }
+
+    public Boolean delete(String username){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        int i = userMapper.delete(queryWrapper);
+        if(i>0) return true;
+        else return false;
+    }
 }

@@ -21,4 +21,9 @@ public class InfController {
     public List<User> findAll(){
         return infService.findAll();
     }
+
+    @RequestMapping("/delete")
+    public Boolean delete(String username){
+        return infService.delete(username);
+    }
 }
