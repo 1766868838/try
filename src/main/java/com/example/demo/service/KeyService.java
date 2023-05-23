@@ -5,7 +5,6 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -14,7 +13,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.pojo.User;
 import com.example.demo.utils.PasswordToKey;
@@ -33,6 +31,7 @@ public class KeyService {
 
     @Resource
 	UserMapper userMapper;
+
     /**
      * 登录业务
      * @param username
@@ -106,12 +105,5 @@ public class KeyService {
         catch(DataAccessException exception){
             return false;
         }
-    }
-
-    public List<User> findAll(){
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",1766868838);
-        List<User> list = userMapper.selectList(queryWrapper);
-        return list;
     }
 }

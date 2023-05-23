@@ -5,10 +5,8 @@ import java.io.UnsupportedEncodingException;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.pojo.User;
 import com.example.demo.service.KeyService;
 
-import java.util.List;
 import jakarta.annotation.Resource;
 
 @RestController
@@ -51,8 +49,5 @@ public class KeyController {
             return false;
         }
     }
-    @RequestMapping("/findAll")
-    public List<User> findAll(){
-        return keyService.findAll();
-    }
+
 }
