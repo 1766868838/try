@@ -14,8 +14,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import com.example.demo.pojo.User;
 
 import jakarta.annotation.Resource;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.demo.mapper.UserMapper;
 
 @SpringBootTest()
