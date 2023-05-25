@@ -1,13 +1,8 @@
 package com.example.demo.service;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.security.Security;
-import java.util.Arrays;
 import java.util.Map;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
@@ -55,9 +50,9 @@ public class KeyService {
                 //与注册时类似的密码加密过程
                 byte[] salt = new byte[16];
                 salt = PasswordToKey.hexStringToBytes(objectMap.get("password").toString().substring(0, 32));
-                byte[] key = PasswordToKey.main(password,salt);
-                byte[] innerKey = PasswordToKey.hexStringToBytes(objectMap.get("password").toString().substring(32, 64));
-                if(Arrays.equals(innerKey,key)){
+                String newKey = PasswordToKey.decrypt(password,salt);
+                String oldKey = objectMap.get("password").toString();
+                if(newKey.equals(oldKey)){
                     //密码正确，登录界面
                     result = true;
                 }
@@ -82,15 +77,8 @@ public class KeyService {
      */
     public Boolean registKey(String username,String password,String email,String code){
         //哈希运算得到密钥
-        Security.addProvider(new BouncyCastleProvider());
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[16];
-        random.nextBytes(salt);
-        byte[] key = PasswordToKey.main(password,salt);
-        byte[] keyByte = new byte[salt.length + key.length];
-        System.arraycopy(salt, 0, keyByte, 0, salt.length);
-        System.arraycopy(key, 0, keyByte, salt.length, key.length);
-        password = new BigInteger(1, keyByte).toString(16);;
+        password = PasswordToKey.main(password);
+
         //写入数据库
         User user = new User(username,password,email);
         try{
