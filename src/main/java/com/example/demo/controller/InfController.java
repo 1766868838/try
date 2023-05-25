@@ -27,8 +27,8 @@ public class InfController {
         return infService.delete(username);
     }
     @RequestMapping("/update")
-    public Boolean update(String username,String password,String email){
+    public Boolean update(String newUsername,String oldUsername,String password,String email){
 
-        return infService.update(username,password,email);
+        return infService.update(oldUsername,newUsername,password,email);
     }
 }

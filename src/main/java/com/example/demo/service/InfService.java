@@ -41,13 +41,24 @@ public class InfService {
         else return false;
     }
 
-    public Boolean update(String username,String password,String email){
+    public Boolean update(String oldUsername,String newUsername,String password,String email){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", oldUsername);
+        User user = userMapper.selectList(queryWrapper).get(0);
         //哈希获得密钥
         password = PasswordToKey.main(password);
 
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username);
-        User user = new User(username, password ,email);
+        if(newUsername.isEmpty()){
+            newUsername = oldUsername;
+        }
+        if(password.isEmpty()){
+            password = user.getPassword();
+        }
+        if(email.isEmpty()){
+            email = user.getEmail();
+        }
+
+        user = new User(newUsername, password ,email);
         int i = userMapper.update(user, queryWrapper);
         if(i>0) return true;
         else return false;
