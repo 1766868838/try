@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import com.example.demo.pojo.User;
-
 import jakarta.annotation.Resource;
 import com.example.demo.mapper.UserMapper;
 
