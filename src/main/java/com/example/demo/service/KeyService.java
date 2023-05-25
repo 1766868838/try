@@ -75,7 +75,7 @@ public class KeyService {
      * @param username
      * @param password
      */
-    public Boolean registKey(String username,String password,String email,String code){
+    public Boolean registKey(String username,String password,String email){
         //哈希运算得到密钥
         password = PasswordToKey.main(password);
 
